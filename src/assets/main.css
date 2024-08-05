@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+html,
+body {
+  height: 100%;
+  margin: auto;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8fafa;
+  color: #333;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.main-section {
+  max-width: 1440px;
+  margin: auto;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: rgba(133, 69, 133, 0.527);
+  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
+}
+
+.section {
+  max-width: 1440px;
+  margin: auto;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  border-radius: 1rem;
+
+  background-color: rgba(133, 69, 133, 0.527);
+  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  max-width: 1440px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.search-input {
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  background-color: #f5f5f5;
+  width: 60%;
+  margin-right: 1rem;
+}
+
+.search-button {
+  font-size: 1rem;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #357dbf;
+}
