@@ -27,12 +27,12 @@ ul {
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 1rem;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  margin-bottom: 2rem;
 }
 
 .search-input {
@@ -62,7 +62,7 @@ ul {
 
 h1 {
   font-size: 30px;
-  padding: 1rem;
+  padding: 2rem;
   margin: 0;
 }
 
