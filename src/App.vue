@@ -283,12 +283,12 @@ onMounted(fetchCurrentLocationWeather)
 }
 
 .sunny-night {
-  background: url('/src/assets/sunny-night.png') no-repeat center center;
+  background: url('/src/assets/sunny-night.jpg') no-repeat center center;
   background-size: cover;
 }
 
 .few-clouds-day {
-  background: url('/src/assets/clouds.jpg') no-repeat center center;
+  background: url('/src/assets/few-clouds-day.jpg') no-repeat center center;
   background-size: cover;
 }
 
@@ -298,7 +298,7 @@ onMounted(fetchCurrentLocationWeather)
 }
 
 .scattered-clouds-day {
-  background: url('/src/assets/clouds.jpg') no-repeat center center;
+  background: url('/src/assets/scattered-clouds-day.jpg') no-repeat center center;
   background-size: cover;
 }
 
