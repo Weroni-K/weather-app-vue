@@ -41,8 +41,8 @@
         class="forecast-hour-list-item"
         v-for="(forecast, index) in hourlyForecast.slice(0, 4)"
         :key="index"
-        @mouseover="setBackgroundClass(forecast.icon)"
-        @mouseleave="resetBackgroundClass"
+        @mouseover="setHoverBackground(forecast.icon)"
+        @mouseleave="resetHoverBackground"
       >
         <h3 class="time">{{ forecast.time }}</h3>
         <div class="status-box">
@@ -328,7 +328,7 @@ onMounted(fetchCurrentLocationWeather)
 }
 
 .rain-day {
-  background: url('/src/assets/rain.png') no-repeat center center;
+  background: url('/src/assets/rain.jpg') no-repeat center center;
   background-size: cover;
 }
 
