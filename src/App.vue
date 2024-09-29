@@ -32,7 +32,7 @@
         <h2>{{ weatherData.name }}, {{ weatherData.sys.country }}</h2>
         <h3>{{ currentDate }}</h3>
         <div class="status-box">
-          <img :src="iconUrl" alt="Weather Icon" class="weather-icon-big" />
+          <img :src="iconUrl" alt="Weather Icon" :style="filterStyle" class="weather-icon-big" />
           <p class="status-now">{{ temperature }}°C, {{ weatherData.weather[0].description }}</p>
         </div>
       </div>
@@ -46,7 +46,12 @@
       >
         <h3 class="time">{{ forecast.time }}</h3>
         <div class="status-box">
-          <img :src="iconMapping[forecast.icon]" alt="Weather Icon" class="weather-icon" />
+          <img
+            :src="iconMapping[forecast.icon]"
+            alt="Weather Icon"
+            :style="filterStyle"
+            class="weather-icon"
+          />
           <p class="status-hourly">
             <template v-if="forecast.temp_min === forecast.temp_max">
               {{ forecast.temp_min }}°C, {{ forecast.description }}
@@ -69,7 +74,12 @@
       >
         <h2 class="date">{{ forecast.date }}</h2>
         <div class="status-box">
-          <img :src="iconMapping[forecast.icon]" alt="Weather Icon" class="weather-icon" />
+          <img
+            :src="iconMapping[forecast.icon]"
+            alt="Weather Icon"
+            :style="filterStyle"
+            class="weather-icon"
+          />
           <p class="status-hourly">
             <template v-if="forecast.temp_min === forecast.temp_max">
               {{ forecast.temp_min }}°C, {{ forecast.description }}
@@ -101,25 +111,28 @@ const temperature = computed(() =>
 )
 
 const iconMapping = {
-  '01d': '/src/assets/icons/rain.svg',
-  '01n': '/src/assets/icons/rain.svg',
-  '02d': '/src/assets/icons/few-clouds-day.png',
-  '02n': '/src/assets/icons/few-clouds-night.png',
-  '03d': '/src/assets/icons/scattered-clouds-day.png',
-  '03n': '/src/assets/icons/scattered-clouds-night.png',
-  '04d': '/src/assets/icons/broken-clouds-day.png',
-  '04n': '/src/assets/icons/broken-clouds-night.png',
-  '09d': '/src/assets/icons/shower-rain-day.png',
-  '09n': '/src/assets/icons/shower-rain-night.png',
-  '10d': '/src/assets/icons/rain-day.png',
-  '10n': '/src/assets/icons/rain-night.png',
-  '11d': '/src/assets/icons/thunderstorm-day.png',
-  '11n': '/src/assets/icons/thunderstorm-night.png',
-  '13d': '/src/assets/icons/snow-day.png',
-  '13n': '/src/assets/icons/snow-night.png',
-  '50d': '/src/assets/icons/mist-day.png',
-  '50n': '/src/assets/icons/mist-night.png'
+  '01d': '/src/assets/icons/sunny-day.svg',
+  '01n': '/src/assets/icons/sunny-night.svg',
+  '02d': '/src/assets/icons/clouds-day2.svg', // few-clouds
+  '02n': '/src/assets/icons/clouds-night2.svg',
+  '03d': '/src/assets/icons/clouds-day1.svg', // scattered-clouds
+  '03n': '/src/assets/icons/clouds-night1.svg',
+  '04d': '/src/assets/icons/clouds1.svg', // broken-clouds (overcaast)
+  '04n': '/src/assets/icons/clouds1.svg',
+  '09d': '/src/assets/icons/showers.svg',
+  '09n': '/src/assets/icons/showers.svg',
+  '10d': '/src/assets/icons/rain.svg',
+  '10n': '/src/assets/icons/rain.svg',
+  '11d': '/src/assets/icons/thunderstorm.svg',
+  '11n': '/src/assets/icons/thunderstorm.svg',
+  '13d': '/src/assets/icons/snow.svg',
+  '13n': '/src/assets/icons/snow.svg',
+  '50d': '/src/assets/icons/mist.svg',
+  '50n': '/src/assets/icons/mist.svg'
 }
+const filterStyle = computed(() => ({
+  filter: 'invert(50%) sepia(300%) saturate(5500%) hue-rotate(250deg) brightness(70%) contrast(95%)'
+}))
 
 const iconUrl = computed(() =>
   weatherData.value ? iconMapping[weatherData.value.weather[0].icon] : null
