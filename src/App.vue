@@ -1,5 +1,13 @@
 <template>
-  <div :class="['container', currentBackgroundClass, hoverBackgroundClass]">
+  <div
+    :style="{
+      backgroundImage: `url(${hoverBackgroundClass})`,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      backgroundSize: 'cover'
+    }"
+    class="container"
+  >
     <div class="header">
       <h1>WEATHER APP</h1>
       <button @click="fetchCurrentLocationWeather" class="location-button">
@@ -32,7 +40,7 @@
         <h2>{{ weatherData.name }}, {{ weatherData.sys.country }}</h2>
         <h3>{{ currentDate }}</h3>
         <div class="status-box">
-          <img :src="iconUrl" alt="Weather Icon" :style="filterStyle" class="weather-icon-big" />
+          <img :src="iconUrl" alt="Weather Icon" class="weather-icon-big" />
           <p class="status-now">{{ temperature }}°C, {{ weatherData.weather[0].description }}</p>
         </div>
       </div>
@@ -46,12 +54,7 @@
       >
         <h3 class="time">{{ forecast.time }}</h3>
         <div class="status-box">
-          <img
-            :src="iconMapping[forecast.icon]"
-            alt="Weather Icon"
-            :style="filterStyle"
-            class="weather-icon"
-          />
+          <img :src="iconMapping[forecast.icon]" alt="Weather Icon" class="weather-icon" />
           <p class="status-hourly">
             <template v-if="forecast.temp_min === forecast.temp_max">
               {{ forecast.temp_min }}°C, {{ forecast.description }}
@@ -74,12 +77,7 @@
       >
         <h2 class="date">{{ forecast.date }}</h2>
         <div class="status-box">
-          <img
-            :src="iconMapping[forecast.icon]"
-            alt="Weather Icon"
-            :style="filterStyle"
-            class="weather-icon"
-          />
+          <img :src="iconMapping[forecast.icon]" alt="Weather Icon" class="weather-icon" />
           <p class="status-hourly">
             <template v-if="forecast.temp_min === forecast.temp_max">
               {{ forecast.temp_min }}°C, {{ forecast.description }}
@@ -111,8 +109,8 @@ const temperature = computed(() =>
 )
 
 const iconMapping = {
-  '01d': '/src/assets/icons/sunny-day.svg',
-  '01n': '/src/assets/icons/sunny-night.svg',
+  '01d': '/src/assets/icons/clear-day.svg',
+  '01n': '/src/assets/icons/clear-night.svg',
   '02d': '/src/assets/icons/clouds-day2.svg', // few-clouds
   '02n': '/src/assets/icons/clouds-night2.svg',
   '03d': '/src/assets/icons/clouds-day1.svg', // scattered-clouds
@@ -130,54 +128,43 @@ const iconMapping = {
   '50d': '/src/assets/icons/mist.svg',
   '50n': '/src/assets/icons/mist.svg'
 }
-const filterStyle = computed(() => ({
-  filter: 'invert(50%) sepia(300%) saturate(5500%) hue-rotate(250deg) brightness(70%) contrast(95%)'
-}))
 
 const iconUrl = computed(() =>
   weatherData.value ? iconMapping[weatherData.value.weather[0].icon] : null
 )
 
 const backgroundMapping = {
-  '01d': 'sunny-day',
-  '01n': 'sunny-night',
-  '02d': 'few-clouds-day',
-  '02n': 'few-clouds-night',
-  '03d': 'scattered-clouds-day',
-  '03n': 'scattered-clouds-night',
-  '04d': 'broken-clouds-day',
-  '04n': 'broken-clouds-night',
-  '09d': 'shower-rain-day',
-  '09n': 'shower-rain-night',
-  '10d': 'rain-day',
-  '10n': 'rain-night',
-  '11d': 'thunderstorm-day',
-  '11n': 'thunderstorm-night',
-  '13d': 'snow-day',
-  '13n': 'snow-night',
-  '50d': 'mist-day',
-  '50n': 'mist-night'
+  '01d': '/src/assets/clear-day.jpg',
+  '01n': '/src/assets/clear-night.jpg',
+  '02d': '/src/assets/few-clouds-day.jpg',
+  '02n': '/src/assets/few-clouds-night.jpg',
+  '03d': '/src/assets/scattered-clouds-day.jpg',
+  '03n': '/src/assets/scattered-clouds-night.jpg',
+  '04d': '/src/assets/broken-clouds-day.jpg',
+  '04n': '/src/assets/broken-clouds-night.jpg',
+  '09d': '/src/assets/rain.jpg',
+  '09n': '/src/assets/shower-rain-night.jpg',
+  '10d': '/src/assets/rain.jpg',
+  '10n': '/src/assets/rain-night.jpg',
+  '11d': '/src/assets/thunderstorm-day.jpg',
+  '11n': '/src/assets/thunderstorm-night.jpg',
+  '13d': '/src/assets/snow-day.jpg',
+  '13n': '/src/assets/snow-night.jpg',
+  '50d': '/src/assets/mist-day.jpg',
+  '50n': '/src/assets/mist-night.jpg'
 }
 
-const currentBackgroundClass = computed(() =>
+const currentBackgroundUrl = computed(() =>
   weatherData.value ? backgroundMapping[weatherData.value.weather[0].icon] : ''
 )
-
-// State for hover
 const hoverBackgroundClass = ref('')
 
-// Method to update the background on hover
 const setHoverBackground = (icon) => {
-  hoverBackgroundClass.value = getBackgroundClass(icon)
+  hoverBackgroundClass.value = backgroundMapping[icon] || ''
 }
 
-// Method to reset the background when not hovering
 const resetHoverBackground = () => {
-  hoverBackgroundClass.value = ''
-}
-
-const getBackgroundClass = (icon) => {
-  return backgroundMapping[icon] || ''
+  hoverBackgroundClass.value = currentBackgroundUrl.value
 }
 
 const fetchCitySuggestions = async () => {
@@ -289,94 +276,4 @@ const currentDate = computed(() => {
 onMounted(fetchCurrentLocationWeather)
 </script>
 
-<style scoped>
-.sunny-day {
-  background: url('/src/assets/sunny-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.sunny-night {
-  background: url('/src/assets/sunny-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.few-clouds-day {
-  background: url('/src/assets/few-clouds-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.few-clouds-night {
-  background: url('/src/assets/few-clouds-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.scattered-clouds-day {
-  background: url('/src/assets/scattered-clouds-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.scattered-clouds-night {
-  background: url('/src/assets/scattered-clouds-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.broken-clouds-day {
-  background: url('/src/assets/broken-clouds-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.broken-clouds-night {
-  background: url('/src/assets/broken-clouds-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.shower-rain-day {
-  background: url('/src/assets/rain.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.shower-rain-night {
-  background: url('/src/assets/shower-rain-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.rain-day {
-  background: url('/src/assets/rain.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.rain-night {
-  background: url('/src/assets/rain-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.thunderstorm-day {
-  background: url('/src/assets/thunderstorm-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.thunderstorm-night {
-  background: url('/src/assets/thunderstorm-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.snow-day {
-  background: url('/src/assets/snow-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.snow-night {
-  background: url('/src/assets/snow-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.mist-day {
-  background: url('/src/assets/mist-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.mist-night {
-  background: url('/src/assets/mist-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-</style>
+<style scoped></style>
