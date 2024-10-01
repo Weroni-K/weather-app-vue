@@ -1,62 +1,173 @@
 <template>
-  <div :class="['container', currentBackgroundClass]">
+  <div :style="{ backgroundImage: `url(${hoverBackgroundClass})` }" class="container">
     <div class="header">
-      <h1>Weather app</h1>
-      <button @click="fetchCurrentLocation" class="location-button">
-        <img class="location-icon" src="/src/assets/icons/location.svg" alt="Location Icon" />
-      </button>
-      <div class="search-bar">
-        <input
-          type="text"
-          v-model="city"
-          placeholder="City..."
-          class="search-input"
-          @input="fetchCitySuggestions"
-        />
-        <button @click="searchByCity" class="search-button">Search</button>
+      <h1>WEATHER APP</h1>
+      <div class="header2">
+        <div class="search-bar">
+          <input
+            type="text"
+            v-model="city"
+            placeholder="City..."
+            class="search-input"
+            @input="fetchCitySuggestions"
+          />
+          <span class="span-suggestions"
+            ><ul v-if="suggestions.length" class="suggestions-list">
+              <li
+                v-for="(suggestion, index) in suggestions"
+                :key="index"
+                @click="selectCity(suggestion)"
+                class="suggestion-item"
+              >
+                {{ suggestion.name }}, {{ suggestion.country }}
+              </li>
+            </ul>
+          </span>
+        </div>
+        <button @click="searchByCity" class="search-button">Search</button
+        ><span class="tooltip">
+          <button @click="fetchCurrentLocationWeather" class="location-button">
+            <img
+              class="location-icon"
+              src="/src/assets/icons/location.svg"
+              alt="Location Icon"
+            /></button
+          ><span class="tooltip-text">Fetch your current location</span></span
+        >
       </div>
     </div>
 
-    <div class="main-section"></div>
-    <div class="section"></div>
-    <div class="section"></div>
+    <div class="forecast-container">
+      <div v-if="weatherData" class="weather-now">
+        <div>
+          <h2>{{ weatherData.name }}, {{ weatherData.sys.country }}</h2>
+          <h3>{{ currentDate }}</h3>
+        </div>
+        <div class="status-box">
+          <img :src="iconUrl" alt="Weather Icon" class="weather-icon-big" />
+          <p class="status-now">{{ temperature }}°C, {{ weatherData.weather[0].description }}</p>
+        </div>
+      </div>
+
+      <div
+        class="forecast-hour-list-item"
+        v-for="(forecast, index) in hourlyForecast.slice(0, 4)"
+        :key="index"
+        @mouseover="setHoverBackground(forecast.icon)"
+        @mouseleave="resetHoverBackground"
+      >
+        <h3 class="time">{{ forecast.time }}</h3>
+        <div class="status-box">
+          <img :src="iconMapping[forecast.icon]" alt="Weather Icon" class="weather-icon" />
+          <p class="status-hourly">
+            <template v-if="forecast.temp_min === forecast.temp_max">
+              {{ forecast.temp_min }}°C, {{ forecast.description }}
+            </template>
+            <template v-else>
+              {{ forecast.temp_min }}°C - {{ forecast.temp_max }}°C, {{ forecast.description }}
+            </template>
+          </p>
+        </div>
+      </div>
+
+      <div class="spacer-row"></div>
+
+      <div
+        class="forecast-day-list-item"
+        v-for="(forecast, index) in dailyForecast"
+        :key="index"
+        @mouseover="setHoverBackground(forecast.icon)"
+        @mouseleave="resetHoverBackground"
+      >
+        <h2 class="date">{{ forecast.date }}</h2>
+        <div class="status-box">
+          <img :src="iconMapping[forecast.icon]" alt="Weather Icon" class="weather-icon" />
+          <p class="status-hourly">
+            <template v-if="forecast.temp_min === forecast.temp_max">
+              {{ forecast.temp_min }}°C, {{ forecast.description }}
+            </template>
+            <template v-else>
+              {{ forecast.temp_min }}°C - {{ forecast.temp_max }}°C, {{ forecast.description }}
+            </template>
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 
 const apikey = 'b09588d826e97199e406a30e962cdb60'
-
-const weatherData = ref(null)
-const suggestions = ref([])
 const city = ref('')
+const weatherData = ref(null)
+const hourlyForecast = ref([])
+const dailyForecast = ref([])
+const suggestions = ref([])
 
-const backgroundMapping = {
-  '01d': 'sunny-day',
-  '01n': 'sunny-night',
-  '02d': 'few-clouds-day',
-  '02n': 'few-clouds-night',
-  '03d': 'scattered-clouds-day',
-  '03n': 'scattered-clouds-night',
-  '04d': 'broken-clouds-day',
-  '04n': 'broken-clouds-night',
-  '09d': 'shower-rain-day',
-  '09n': 'shower-rain-night',
-  '10d': 'rain-day',
-  '10n': 'rain-night',
-  '11d': 'thunderstorm-day',
-  '11n': 'thunderstorm-night',
-  '13d': 'snow-day',
-  '13n': 'snow-night',
-  '50d': 'mist-day',
-  '50n': 'mist-night'
+const temperature = computed(() =>
+  weatherData.value ? Math.floor(weatherData.value.main.temp - 273) : null
+)
+
+const iconMapping = {
+  '01d': '/src/assets/icons/clear-day.svg',
+  '01n': '/src/assets/icons/clear-night.svg',
+  '02d': '/src/assets/icons/clouds-day2.svg', // few-clouds, images downloaded from Freepik
+  '02n': '/src/assets/icons/clouds-night2.svg',
+  '03d': '/src/assets/icons/clouds-day1.svg', // scattered-clouds
+  '03n': '/src/assets/icons/clouds-night1.svg',
+  '04d': '/src/assets/icons/clouds1.svg', // broken-clouds (overcaast)
+  '04n': '/src/assets/icons/clouds1.svg',
+  '09d': '/src/assets/icons/showers.svg',
+  '09n': '/src/assets/icons/showers.svg',
+  '10d': '/src/assets/icons/rain.svg',
+  '10n': '/src/assets/icons/rain.svg',
+  '11d': '/src/assets/icons/thunderstorm.svg',
+  '11n': '/src/assets/icons/thunderstorm.svg',
+  '13d': '/src/assets/icons/snow.svg',
+  '13n': '/src/assets/icons/snow.svg',
+  '50d': '/src/assets/icons/mist.svg',
+  '50n': '/src/assets/icons/mist.svg'
 }
 
-const currentBackgroundClass = computed(() =>
+const iconUrl = computed(() =>
+  weatherData.value ? iconMapping[weatherData.value.weather[0].icon] : null
+)
+
+const backgroundMapping = {
+  '01d': '/src/assets/clear-day.jpg',
+  '01n': '/src/assets/clear-night.jpg',
+  '02d': '/src/assets/few-clouds-day.jpg',
+  '02n': '/src/assets/few-clouds-night.jpg',
+  '03d': '/src/assets/scattered-clouds-day.jpg',
+  '03n': '/src/assets/scattered-clouds-night.jpg',
+  '04d': '/src/assets/broken-clouds-day.jpg',
+  '04n': '/src/assets/broken-clouds-night.jpg',
+  '09d': '/src/assets/rain.jpg', //add rain..?
+  '09n': '/src/assets/rain.jpg', //add rain..?
+  '10d': '/src/assets/rain.jpg', //add rain..?
+  '10n': '/src/assets/rain.jpg', //add rain..?
+  '11d': '/src/assets/thunderstorm-day.jpg',
+  '11n': '/src/assets/thunderstorm-night.jpg',
+  '13d': '/src/assets/snow-day.jpg',
+  '13n': '/src/assets/snow-night.jpg',
+  '50d': '/src/assets/mist-day.jpg', //add fog..?
+  '50n': '/src/assets/mist-night.jpg' //add fog..?
+}
+const currentBackgroundUrl = computed(() =>
   weatherData.value ? backgroundMapping[weatherData.value.weather[0].icon] : ''
 )
+const hoverBackgroundClass = ref('')
+
+const setHoverBackground = (icon) => {
+  hoverBackgroundClass.value = backgroundMapping[icon] || ''
+}
+
+const resetHoverBackground = () => {
+  hoverBackgroundClass.value = currentBackgroundUrl.value
+}
 
 const fetchCitySuggestions = async () => {
   if (!city.value || city.value.length < 3) {
@@ -145,9 +256,46 @@ const searchByCity = async () => {
     await fetchForecast(weatherData.value.name)
     hoverBackgroundClass.value = backgroundMapping[weatherData.value.weather[0].icon] || ''
   } catch (error) {
-    console.error('Error fetching city suggestions:', error)
+    console.error('Error fetching weather data:', error)
+  }
+  city.value = ''
+}
+
+const hourForecast = (forecast) => {
+  hourlyForecast.value = []
+  for (let i = 0; i < 5; i++) {
+    const date = new Date(forecast.list[i].dt * 1000)
+    hourlyForecast.value.push({
+      time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }), // 24-hour format
+      temp_max: Math.floor(forecast.list[i].main.temp_max - 273),
+      temp_min: Math.floor(forecast.list[i].main.temp_min - 273),
+      description: forecast.list[i].weather[0].description,
+      icon: forecast.list[i].weather[0].icon
+    })
   }
 }
-</script>
 
-<style scoped></style>
+const dayForecast = (forecast) => {
+  dailyForecast.value = []
+  for (let i = 8; i < forecast.list.length; i += 8) {
+    const date = new Date(forecast.list[i].dt * 1000)
+    dailyForecast.value.push({
+      date: date.toLocaleDateString('en-GB', {
+        weekday: 'short', // "Wed"
+        day: 'numeric', // "18"
+        month: 'short' // "Sep"
+      }),
+      temp_max: Math.floor(forecast.list[i].main.temp_max - 273),
+      temp_min: Math.floor(forecast.list[i].main.temp_min - 273),
+      description: forecast.list[i].weather[0].description,
+      icon: forecast.list[i].weather[0].icon
+    })
+  }
+}
+const currentDate = computed(() => {
+  const options = { weekday: 'short', day: 'numeric', month: 'short' }
+  return new Date().toLocaleDateString('en-GB', options)
+})
+
+onMounted(fetchCurrentLocationWeather)
+</script>
