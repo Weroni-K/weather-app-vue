@@ -29,7 +29,7 @@
           <button @click="fetchCurrentLocationWeather" class="location-button">
             <img
               class="location-icon"
-              src="/src/assets/icons/location.svg"
+              src="/weather-app-vue/src/assets/icons/location.svg"
               alt="Location Icon"
             /></button
           ><span class="tooltip-text">Fetch your current location</span></span
@@ -112,24 +112,24 @@ const temperature = computed(() =>
 )
 
 const iconMapping = {
-  '01d': '/src/assets/icons/clear-day.svg',
-  '01n': '/src/assets/icons/clear-night.svg',
-  '02d': '/src/assets/icons/clouds-day2.svg', // few-clouds, images downloaded from Freepik
-  '02n': '/src/assets/icons/clouds-night2.svg',
-  '03d': '/src/assets/icons/clouds-day1.svg', // scattered-clouds
-  '03n': '/src/assets/icons/clouds-night1.svg',
-  '04d': '/src/assets/icons/clouds1.svg', // broken-clouds (overcaast)
-  '04n': '/src/assets/icons/clouds1.svg',
-  '09d': '/src/assets/icons/showers.svg',
-  '09n': '/src/assets/icons/showers.svg',
-  '10d': '/src/assets/icons/rain.svg',
-  '10n': '/src/assets/icons/rain.svg',
-  '11d': '/src/assets/icons/thunderstorm.svg',
-  '11n': '/src/assets/icons/thunderstorm.svg',
-  '13d': '/src/assets/icons/snow.svg',
-  '13n': '/src/assets/icons/snow.svg',
-  '50d': '/src/assets/icons/mist.svg',
-  '50n': '/src/assets/icons/mist.svg'
+  '01d': '/weather-app-vue/src/assets/icons/clear-day.svg',
+  '01n': '/weather-app-vue/src/assets/icons/clear-night.svg',
+  '02d': '/weather-app-vue/src/assets/icons/clouds-day2.svg', // few-clouds, images downloaded from Freepik
+  '02n': '/weather-app-vue/src/assets/icons/clouds-night2.svg',
+  '03d': '/weather-app-vue/src/assets/icons/clouds-day1.svg', // scattered-clouds
+  '03n': '/weather-app-vue/src/assets/icons/clouds-night1.svg',
+  '04d': '/weather-app-vue/src/assets/icons/clouds1.svg', // broken-clouds (overcaast)
+  '04n': '/weather-app-vue/src/assets/icons/clouds1.svg',
+  '09d': '/weather-app-vue/src/assets/icons/showers.svg',
+  '09n': '/weather-app-vue/src/assets/icons/showers.svg',
+  '10d': '/weather-app-vue/src/assets/icons/rain.svg',
+  '10n': '/weather-app-vue/src/assets/icons/rain.svg',
+  '11d': '/weather-app-vue/src/assets/icons/thunderstorm.svg',
+  '11n': '/weather-app-vue/src/assets/icons/thunderstorm.svg',
+  '13d': '/weather-app-vue/src/assets/icons/snow.svg',
+  '13n': '/weather-app-vue/src/assets/icons/snow.svg',
+  '50d': '/weather-app-vue/src/assets/icons/mist.svg',
+  '50n': '/weather-app-vue/src/assets/icons/mist.svg'
 }
 
 const iconUrl = computed(() =>
@@ -137,24 +137,24 @@ const iconUrl = computed(() =>
 )
 
 const backgroundMapping = {
-  '01d': '/src/assets/clear-day.jpg',
-  '01n': '/src/assets/clear-night.jpg',
-  '02d': '/src/assets/few-clouds-day.jpg',
-  '02n': '/src/assets/few-clouds-night.jpg',
-  '03d': '/src/assets/scattered-clouds-day.jpg',
-  '03n': '/src/assets/scattered-clouds-night.jpg',
-  '04d': '/src/assets/broken-clouds-day.jpg',
-  '04n': '/src/assets/broken-clouds-night.jpg',
-  '09d': '/src/assets/rain.jpg', //add rain..?
-  '09n': '/src/assets/rain.jpg', //add rain..?
-  '10d': '/src/assets/rain.jpg', //add rain..?
-  '10n': '/src/assets/rain.jpg', //add rain..?
-  '11d': '/src/assets/thunderstorm-day.jpg',
-  '11n': '/src/assets/thunderstorm-night.jpg',
-  '13d': '/src/assets/snow-day.jpg',
-  '13n': '/src/assets/snow-night.jpg',
-  '50d': '/src/assets/mist-day.jpg', //add fog..?
-  '50n': '/src/assets/mist-night.jpg' //add fog..?
+  '01d': '/weather-app-vue/src/assets/clear-day.jpg',
+  '01n': '/weather-app-vue/src/assets/clear-night.jpg',
+  '02d': '/weather-app-vue/src/assets/few-clouds-day.jpg',
+  '02n': '/weather-app-vue/src/assets/few-clouds-night.jpg',
+  '03d': '/weather-app-vue/src/assets/scattered-clouds-day.jpg',
+  '03n': '/weather-app-vue/src/assets/scattered-clouds-night.jpg',
+  '04d': '/weather-app-vue/src/assets/broken-clouds-day.jpg',
+  '04n': '/weather-app-vue/src/assets/broken-clouds-night.jpg',
+  '09d': '/weather-app-vue/src/assets/rain.jpg', //add rain..?
+  '09n': '/weather-app-vue/src/assets/rain.jpg', //add rain..?
+  '10d': '/weather-app-vue/src/assets/rain.jpg', //add rain..?
+  '10n': '/weather-app-vue/src/assets/rain.jpg', //add rain..?
+  '11d': '/weather-app-vue/src/assets/thunderstorm-day.jpg',
+  '11n': '/weather-app-vue/src/assets/thunderstorm-night.jpg',
+  '13d': '/weather-app-vue/src/assets/snow-day.jpg',
+  '13n': '/weather-app-vue/src/assets/snow-night.jpg',
+  '50d': '/weather-app-vue/src/assets/mist-day.jpg', //add fog..?
+  '50n': '/weather-app-vue/src/assets/mist-night.jpg' //add fog..?
 }
 const currentBackgroundUrl = computed(() =>
   weatherData.value ? backgroundMapping[weatherData.value.weather[0].icon] : ''
