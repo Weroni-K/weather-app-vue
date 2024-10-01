@@ -29,7 +29,7 @@
           <button @click="fetchCurrentLocationWeather" class="location-button">
             <img
               class="location-icon"
-              src="/weather-app-vue/src/assets/icons/location.svg"
+              src="./assets/icons/location.svg"
               alt="Location Icon"
             /></button
           ><span class="tooltip-text">Fetch your current location</span></span
