@@ -1,37 +1,48 @@
 <template>
-  <div :class="['container', currentBackgroundClass, hoverBackgroundClass]">
+  <div :style="{ backgroundImage: `url(${hoverBackgroundClass})` }" class="container">
     <div class="header">
       <h1>WEATHER APP</h1>
-      <button @click="fetchCurrentLocationWeather" class="location-button">
-        <img class="location-icon" src="/src/assets/icons/location.svg" alt="Location Icon" />
-      </button>
-      <div class="search-bar">
-        <input
-          type="text"
-          v-model="city"
-          placeholder="City..."
-          class="search-input"
-          @input="fetchCitySuggestions"
-        />
-
-        <button @click="searchByCity" class="search-button">Search</button>
-        <ul v-if="suggestions.length" class="suggestions-list">
-          <li
-            v-for="(suggestion, index) in suggestions"
-            :key="index"
-            @click="selectCity(suggestion)"
-            class="suggestion-item"
-          >
-            {{ suggestion.name }}, {{ suggestion.country }}
-          </li>
-        </ul>
+      <div class="header2">
+        <div class="search-bar">
+          <input
+            type="text"
+            v-model="city"
+            placeholder="City..."
+            class="search-input"
+            @input="fetchCitySuggestions"
+          />
+          <span class="span-suggestions"
+            ><ul v-if="suggestions.length" class="suggestions-list">
+              <li
+                v-for="(suggestion, index) in suggestions"
+                :key="index"
+                @click="selectCity(suggestion)"
+                class="suggestion-item"
+              >
+                {{ suggestion.name }}, {{ suggestion.country }}
+              </li>
+            </ul>
+          </span>
+        </div>
+        <button @click="searchByCity" class="search-button">Search</button
+        ><span class="tooltip">
+          <button @click="fetchCurrentLocationWeather" class="location-button">
+            <img
+              class="location-icon"
+              src="/src/assets/icons/location.svg"
+              alt="Location Icon"
+            /></button
+          ><span class="tooltip-text">Fetch your current location</span></span
+        >
       </div>
     </div>
 
     <div class="forecast-container">
       <div v-if="weatherData" class="weather-now">
-        <h2>{{ weatherData.name }}, {{ weatherData.sys.country }}</h2>
-        <h3>{{ currentDate }}</h3>
+        <div>
+          <h2>{{ weatherData.name }}, {{ weatherData.sys.country }}</h2>
+          <h3>{{ currentDate }}</h3>
+        </div>
         <div class="status-box">
           <img :src="iconUrl" alt="Weather Icon" class="weather-icon-big" />
           <p class="status-now">{{ temperature }}°C, {{ weatherData.weather[0].description }}</p>
@@ -42,8 +53,8 @@
         class="forecast-hour-list-item"
         v-for="(forecast, index) in hourlyForecast.slice(0, 4)"
         :key="index"
-        @mouseover="setBackgroundClass(forecast.icon)"
-        @mouseleave="resetBackgroundClass"
+        @mouseover="setHoverBackground(forecast.icon)"
+        @mouseleave="resetHoverBackground"
       >
         <h3 class="time">{{ forecast.time }}</h3>
         <div class="status-box">
@@ -90,7 +101,6 @@ import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 
 const apikey = 'b09588d826e97199e406a30e962cdb60'
-
 const city = ref('')
 const weatherData = ref(null)
 const hourlyForecast = ref([])
@@ -102,24 +112,24 @@ const temperature = computed(() =>
 )
 
 const iconMapping = {
-  '01d': '/src/assets/icons/rain.svg',
-  '01n': '/src/assets/icons/rain.svg',
-  '02d': '/src/assets/icons/few-clouds-day.png',
-  '02n': '/src/assets/icons/few-clouds-night.png',
-  '03d': '/src/assets/icons/scattered-clouds-day.png',
-  '03n': '/src/assets/icons/scattered-clouds-night.png',
-  '04d': '/src/assets/icons/broken-clouds-day.png',
-  '04n': '/src/assets/icons/broken-clouds-night.png',
-  '09d': '/src/assets/icons/shower-rain-day.png',
-  '09n': '/src/assets/icons/shower-rain-night.png',
-  '10d': '/src/assets/icons/rain-day.png',
-  '10n': '/src/assets/icons/rain-night.png',
-  '11d': '/src/assets/icons/thunderstorm-day.png',
-  '11n': '/src/assets/icons/thunderstorm-night.png',
-  '13d': '/src/assets/icons/snow-day.png',
-  '13n': '/src/assets/icons/snow-night.png',
-  '50d': '/src/assets/icons/mist-day.png',
-  '50n': '/src/assets/icons/mist-night.png'
+  '01d': '/src/assets/icons/clear-day.svg',
+  '01n': '/src/assets/icons/clear-night.svg',
+  '02d': '/src/assets/icons/clouds-day2.svg', // few-clouds, images downloaded from Freepik
+  '02n': '/src/assets/icons/clouds-night2.svg',
+  '03d': '/src/assets/icons/clouds-day1.svg', // scattered-clouds
+  '03n': '/src/assets/icons/clouds-night1.svg',
+  '04d': '/src/assets/icons/clouds1.svg', // broken-clouds (overcaast)
+  '04n': '/src/assets/icons/clouds1.svg',
+  '09d': '/src/assets/icons/showers.svg',
+  '09n': '/src/assets/icons/showers.svg',
+  '10d': '/src/assets/icons/rain.svg',
+  '10n': '/src/assets/icons/rain.svg',
+  '11d': '/src/assets/icons/thunderstorm.svg',
+  '11n': '/src/assets/icons/thunderstorm.svg',
+  '13d': '/src/assets/icons/snow.svg',
+  '13n': '/src/assets/icons/snow.svg',
+  '50d': '/src/assets/icons/mist.svg',
+  '50n': '/src/assets/icons/mist.svg'
 }
 
 const iconUrl = computed(() =>
@@ -127,61 +137,62 @@ const iconUrl = computed(() =>
 )
 
 const backgroundMapping = {
-  '01d': 'sunny-day',
-  '01n': 'sunny-night',
-  '02d': 'few-clouds-day',
-  '02n': 'few-clouds-night',
-  '03d': 'scattered-clouds-day',
-  '03n': 'scattered-clouds-night',
-  '04d': 'broken-clouds-day',
-  '04n': 'broken-clouds-night',
-  '09d': 'shower-rain-day',
-  '09n': 'shower-rain-night',
-  '10d': 'rain-day',
-  '10n': 'rain-night',
-  '11d': 'thunderstorm-day',
-  '11n': 'thunderstorm-night',
-  '13d': 'snow-day',
-  '13n': 'snow-night',
-  '50d': 'mist-day',
-  '50n': 'mist-night'
+  '01d': '/src/assets/clear-day.jpg',
+  '01n': '/src/assets/clear-night.jpg',
+  '02d': '/src/assets/few-clouds-day.jpg',
+  '02n': '/src/assets/few-clouds-night.jpg',
+  '03d': '/src/assets/scattered-clouds-day.jpg',
+  '03n': '/src/assets/scattered-clouds-night.jpg',
+  '04d': '/src/assets/broken-clouds-day.jpg',
+  '04n': '/src/assets/broken-clouds-night.jpg',
+  '09d': '/src/assets/rain.jpg', //add rain..?
+  '09n': '/src/assets/rain.jpg', //add rain..?
+  '10d': '/src/assets/rain.jpg', //add rain..?
+  '10n': '/src/assets/rain.jpg', //add rain..?
+  '11d': '/src/assets/thunderstorm-day.jpg',
+  '11n': '/src/assets/thunderstorm-night.jpg',
+  '13d': '/src/assets/snow-day.jpg',
+  '13n': '/src/assets/snow-night.jpg',
+  '50d': '/src/assets/mist-day.jpg', //add fog..?
+  '50n': '/src/assets/mist-night.jpg' //add fog..?
 }
-
-const currentBackgroundClass = computed(() =>
+const currentBackgroundUrl = computed(() =>
   weatherData.value ? backgroundMapping[weatherData.value.weather[0].icon] : ''
 )
-
-// State for hover
 const hoverBackgroundClass = ref('')
 
-// Method to update the background on hover
 const setHoverBackground = (icon) => {
-  hoverBackgroundClass.value = getBackgroundClass(icon)
+  hoverBackgroundClass.value = backgroundMapping[icon] || ''
 }
 
-// Method to reset the background when not hovering
 const resetHoverBackground = () => {
-  hoverBackgroundClass.value = ''
-}
-
-const getBackgroundClass = (icon) => {
-  return backgroundMapping[icon] || ''
+  hoverBackgroundClass.value = currentBackgroundUrl.value
 }
 
 const fetchCitySuggestions = async () => {
-  if (!city.value) {
+  if (!city.value || city.value.length < 3) {
     suggestions.value = []
     return
   }
   try {
     const url = `http://api.openweathermap.org/data/2.5/find?q=${city.value}&appid=${apikey}`
     const response = await axios.get(url)
-    suggestions.value = response.data.list.map((city) => ({
-      name: city.name,
-      country: city.sys.country
-    }))
+    const uniqueCities = new Set()
+    suggestions.value = response.data.list
+      .map((city) => ({
+        name: city.name,
+        country: city.sys.country
+      }))
+      .filter((city) => {
+        const key = `${city.name}, ${city.country}`
+        if (!uniqueCities.has(key)) {
+          uniqueCities.add(key)
+          return true
+        }
+        return false
+      })
   } catch (error) {
-    console.error('Error fetching city suggestions:', error)
+    suggestions.value = []
   }
 }
 
@@ -192,20 +203,32 @@ const selectCity = (selectedCity) => {
 }
 
 const fetchCurrentLocationWeather = async () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(async (position) => {
+  if (!navigator.geolocation) {
+    console.error('Geolocation is not supported by this browser.')
+    return
+  }
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
       const { latitude, longitude } = position.coords
       const url = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}`
-      await fetchWeatherData(url)
-    })
-  }
+      try {
+        await fetchWeatherData(url)
+        hoverBackgroundClass.value = backgroundMapping[weatherData.value.weather[0].icon] || ''
+      } catch (error) {
+        console.error('Error fetching weather data for current location:', error)
+      }
+    },
+    (error) => {
+      console.error('Error getting geolocation:', error)
+    }
+  )
 }
-// other data: const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&appid=${apikey}`
+
 const fetchWeatherData = async (url) => {
   try {
     const response = await axios.get(url)
     weatherData.value = response.data
-    // Fetch forecast data
+    hoverBackgroundClass.value = backgroundMapping[weatherData.value.weather[0].icon] || ''
     await fetchForecast(weatherData.value.name)
   } catch (error) {
     console.error('Error fetching weather data:', error)
@@ -230,8 +253,8 @@ const searchByCity = async () => {
     const urlsearch = `http://api.openweathermap.org/data/2.5/weather?q=${city.value}&appid=${apikey}`
     const response = await axios.get(urlsearch)
     weatherData.value = response.data
-    // Fetch forecast data
     await fetchForecast(weatherData.value.name)
+    hoverBackgroundClass.value = backgroundMapping[weatherData.value.weather[0].icon] || ''
   } catch (error) {
     console.error('Error fetching weather data:', error)
   }
@@ -276,95 +299,3 @@ const currentDate = computed(() => {
 
 onMounted(fetchCurrentLocationWeather)
 </script>
-
-<style scoped>
-.sunny-day {
-  background: url('/src/assets/sunny-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.sunny-night {
-  background: url('/src/assets/sunny-night.png') no-repeat center center;
-  background-size: cover;
-}
-
-.few-clouds-day {
-  background: url('/src/assets/clouds.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.few-clouds-night {
-  background: url('/src/assets/few-clouds-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.scattered-clouds-day {
-  background: url('/src/assets/clouds.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.scattered-clouds-night {
-  background: url('/src/assets/scattered-clouds-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.broken-clouds-day {
-  background: url('/src/assets/broken-clouds-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.broken-clouds-night {
-  background: url('/src/assets/broken-clouds-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.shower-rain-day {
-  background: url('/src/assets/rain.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.shower-rain-night {
-  background: url('/src/assets/shower-rain-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.rain-day {
-  background: url('/src/assets/rain.png') no-repeat center center;
-  background-size: cover;
-}
-
-.rain-night {
-  background: url('/src/assets/rain-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.thunderstorm-day {
-  background: url('/src/assets/thunderstorm-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.thunderstorm-night {
-  background: url('/src/assets/thunderstorm-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.snow-day {
-  background: url('/src/assets/snow-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.snow-night {
-  background: url('/src/assets/snow-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.mist-day {
-  background: url('/src/assets/mist-day.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-.mist-night {
-  background: url('/src/assets/mist-night.jpg') no-repeat center center;
-  background-size: cover;
-}
-</style>
