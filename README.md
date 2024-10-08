@@ -7,5 +7,5 @@ This project presents single page website with weather forecast. The forecast is
 
 
 ## Future improvement ideas:
--update background images for few weather conditions (rain, showers, fog)
--to improve the visibility of the title, replace it with the app logo
+- update background images for few weather conditions (rain, showers, fog)
+- to improve the visibility of the title, replace it with the app logo
